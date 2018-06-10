@@ -1,12 +1,22 @@
-const app = angular.module( 'TaskApp', [] );
+const app = angular.module( 'ToDoApp', [] );
 
-app.controller( 'TaskController', ['$http', function( $http ) {
+class Task{
+    constructor( title, priority, taskInfo, dueDate ){
+        this.title = title;
+        this.priority = priority;
+        this.taskInfo = taskInfo;
+        this.dueDate = dueDate;
+        this.completed = false;
+    } // end constructor
+} // end Task class
+
+app.controller( 'ToDoController', ['$http', function( $http ) {
     let vm = this;
-    vm.tasks = [];
+    vm.toDos = [];
 
     vm.addTask = function() {
         let newTask = new Task( vm.titleIn, vm.priorityIn, vm.taskInfoIn, vm.dueDateIn );
-        console.log( 'adding new task:', newTask );
+        console.log( 'adding new task:', vm.newTask );
         $http({
             method: 'POST',
             url: '/tasks',
@@ -20,12 +30,11 @@ app.controller( 'TaskController', ['$http', function( $http ) {
     }
 
     vm.getTasks = function() {
-        console.log( 'in getTasks', getTasks );
         $http({
             method: 'GET',
             url: '/tasks'
         }).then( function( response ){
-            vm.tasks = response.data;
+            vm.toDos = response.data;
         }).catch( function( error ) {
             console.log( 'error from GET', error );
         })
@@ -40,16 +49,16 @@ app.controller( 'TaskController', ['$http', function( $http ) {
         }
     }
 
-    vm.completeTask = function(taskCompleted) {
+    vm.completeTask = function(selectedToDo) {
         console.log( 'BAM! Finished a task!' );
-        console.log( 'task to mark as completed', taskCompleted );
-        let updatedTask = {
+        console.log( 'task to mark as completed', selectedToDo );
+        let updatedData = {
             completed: true
         }
         $http({
             method: 'PUT',
-            url: `/tasks/${taskCompleted._id}`,
-            data: updatedTask
+            url: `/tasks/${selectedToDo._id}`,
+            data: updatedData
         }).then( function( response ) {
             vm.getTasks();
         }).catch( function ( error ) {
@@ -57,13 +66,13 @@ app.controller( 'TaskController', ['$http', function( $http ) {
         })
     }
 
-    vm.removeTask = function( taskRemoval ) {
+    vm.removeTask = function( taskToDelete ) {
         console.log( 'Begone, you task!' );
-        console.log( taskRemoval );
+        console.log( taskToDelete );
         if( confirm( 'Do you REALLY want to delete this?' )) {
             $http({
                 method: 'DELETE',
-                url: `/tasks/${taskRemoval._id}`
+                url: `/tasks/${taskToDelete._id}`
             }).then( function( response ) {
                 vm.getTasks();
             }).catch( function( error ) {
@@ -72,17 +81,19 @@ app.controller( 'TaskController', ['$http', function( $http ) {
         }
     }
 
-    $http.editingData = {};
+    vm.modify = function(task) {
+        $http.editingData = {};
 
-    for (let i=0, length = $http.task.length; i < length; i++) {
-        $http.editingData[$http.task[i].id] = false;
-    }
-    $http.modify = function(task){
-        $http.editingData[task.id] = true;
-    };
-    $http.update = function(task){
-        $http.editingData[task.id] = false;
-    };
+        for (let i=0, length = $http.tasks.length; i < length; i++) {
+            $http.editingData[$http.tasks[i].id] = false;
+        }
+        $http.modify = function(tasks){
+            $http.editingData[tasks.id] = true;
+        };
+        $http.update = function(task){
+            $http.editingData[tasks.id] = false;
+        };
+    } // modify
 
     vm.getTasks();
 }]);

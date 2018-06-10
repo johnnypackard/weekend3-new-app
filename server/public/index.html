@@ -20,12 +20,12 @@
     </header>
 
     <main>
-        <div ng-app="TaskApp">
-            <div ng-controller="TaskController as tc" class="container">
+        <div ng-app="ToDoApp">
+            <div ng-controller="ToDoController as tc" class="container">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
-                            <h4>Johnny P's Task Table</h4>
+                            <h4>Add a new task:</h4>
                             <form ng-submit="tc.addTask()">
                                 <input type="text" ng-model=tc.newTask.titleIn placeholder="Task Name"/>
                                 <input type="text" ng-model=tc.newTask.priorityIn placeholder="Task Priority"/>
@@ -44,18 +44,18 @@
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="task in tc.tasks | orderBy: '!completed'">
-                                            <td ng-class="{complete: task.completed}"{{task.taskInfo}}{{task.dueDate}}/>
-                                                <div ng-hide="editingData[task.id]">{{task.title}}</div>
-                                                <div ng-show="editingData[task.id]"><input type="text" ng-model="task.title"/></div>
-                                                <div ng-hide="editingData[task.id]">{{task.priority}}</div>
-                                                <div ng-show="editingData[task.id]"><input type="text" ng-model="task.priority"/></div>
-                                                <div ng-hide="editingData[task.id]">{{task.taskInfo}}</div>
-                                                <div ng-show="editingData[task.id]"><input type="text" ng-model="task.taskInfo"/></div>
-                                                <div ng-hide="editingData[task.id]">{{task.dueDate}}</div>
-                                                <div ng-show="editingData[task.id]"><input type="datetime" ng-model="task.dueDate"/></div>
+                                            <td ng-class="{complete: task.completed}"/>
+                                                <div ng-hide="editingData[tasks.id]">{{task.title}}</div>
+                                                <div ng-show="editingData[tasks.id]"><input type="text" ng-model="task.title"/></div>
+                                                <div ng-hide="editingData[tasks.id]">{{task.priority}}</div>
+                                                <div ng-show="editingData[tasks.id]"><input type="text" ng-model="task.priority"/></div>
+                                                <div ng-hide="editingData[tasks.id]">{{task.taskInfo}}</div>
+                                                <div ng-show="editingData[tasks.id]"><input type="text" ng-model="task.taskInfo"/></div>
+                                                <div ng-hide="editingData[tasks.id]">{{task.dueDate}}</div>
+                                                <div ng-show="editingData[tasks.id]"><input type="datetime" ng-model="task.dueDate"/></div>
                                                 <div id="buttons">
                                                     <button ng-hide="task.completed" ng-click="tc.completeTask(task)">Complete</button>
-                                                    <button ng-hide="editingData[task.id]" ng-click="modify(task)">Edit</button>
+                                                    <button ng-hide="editingData[task.id]" ng-click="tc.modify(task)">Edit</button>
                                                     <button ng-click="tc.removeTask(task)">Delete</button>
                                                 </div>
                                             </td>
