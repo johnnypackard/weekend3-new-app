@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="vendors/angular.min.js"></script>
+    <script src="scripts/client.js"></script>
+    <link rel="stylesheet" href="vendors/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <title>Johnny P's Terrific Task App</title>
+</head>
+<body>
+    <header class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Johnny P's Task List</h1>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div ng-app="TaskApp">
+            <div ng-controller="TaskController as tc" class="container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Johnny P's Task Table</h4>
+                            <form ng-submit="tc.addTask()">
+                                <input type="text" ng-model=tc.newTask.titleIn placeholder="Task Name"/>
+                                <input type="text" ng-model=tc.newTask.priorityIn placeholder="Task Priority"/>
+                                <input type="text" ng-model=tc.newTask.taskInfoIn placeholder="Task Details"/>
+                                <input type="datetime" ng-model=tc.newTask.dueDateIn placeholder="Due Date"/>
+                                <input type="submit"/>
+                            </form>
+                            <div class="table-responsive">
+                                <table id="taskTable" class="table table-bordered table-striped">
+                                    <thead>
+                                        <th>Task Name</th>
+                                        <th>Priority of Task</th>
+                                        <th>Task Information</th>
+                                        <th>Due Date</th>
+                                        <th>Complete, Edit, Delete</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="task in tc.tasks | orderBy: '!completed'">
+                                            <td ng-class="{complete: task.completed}"{{task.taskInfo}}{{task.dueDate}}/>
+                                                <div ng-hide="editingData[task.id]">{{task.title}}</div>
+                                                <div ng-show="editingData[task.id]"><input type="text" ng-model="task.title"/></div>
+                                                <div ng-hide="editingData[task.id]">{{task.priority}}</div>
+                                                <div ng-show="editingData[task.id]"><input type="text" ng-model="task.priority"/></div>
+                                                <div ng-hide="editingData[task.id]">{{task.taskInfo}}</div>
+                                                <div ng-show="editingData[task.id]"><input type="text" ng-model="task.taskInfo"/></div>
+                                                <div ng-hide="editingData[task.id]">{{task.dueDate}}</div>
+                                                <div ng-show="editingData[task.id]"><input type="datetime" ng-model="task.dueDate"/></div>
+                                                <div id="buttons">
+                                                    <button ng-hide="task.completed" ng-click="tc.completeTask(task)">Complete</button>
+                                                    <button ng-hide="editingData[task.id]" ng-click="modify(task)">Edit</button>
+                                                    <button ng-click="tc.removeTask(task)">Delete</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
